@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+  flyway:
+    enabled: false
+    password: ${DATASOURCE_PASSWORD}
+    url: ${DATASOURCE_URL}
+    user: ${DATASOURCE_USERNAME}
+    default-schema: ${DATASOURCE_USERNAME}
+    baseline-on-migrate: true
+    table: hh_schema_history
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        generate_statistics: true
+    hibernate:
+      ddl-auto: none
+logging:
+  level:
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.orm.jpa.JpaTransactionManager: TRACE
+#    reactor.netty.http.client: DEBUG
+search-result:
+  per-page: 100
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
