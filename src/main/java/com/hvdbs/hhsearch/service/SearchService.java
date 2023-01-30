@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 
 @RequiredArgsConstructor
@@ -15,16 +16,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class SearchService {
     private final WebClient webClient;
 
-    public void findVacancies() {
+    public Mono<String> findVacancies(String keyword) {
         webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/vacancies")
-                        .queryParam("text", "java разработчик")
+                        .queryParam("text", keyword)
                         .build()
                 )
-                .exchangeToMono(clientResponse -> clientResponse.bodyToMono(String.class))
-                .subscribe(
-                        data -> System.out.println(data),
-                        err -> System.out.println(err)
-                );
+                .exchangeToMono(clientResponse -> clientResponse.bodyToMono(String.class));
     }
 }

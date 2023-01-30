@@ -35,12 +35,13 @@ public class HHsearchApplication {
     //@Scheduled
     @EventListener(ApplicationReadyEvent.class)
     public void run() throws URISyntaxException, IOException {
-
-
         List<String> allLines = Files.readAllLines(
                 Paths.get(Objects.requireNonNull(getClass().getClassLoader()
                                 .getResource("search_keywords.txt"))
-                        .toURI()));
+                        .toURI())).stream()
+                .map(keyword ->
+                        service.findVacancies(keyword).
+        );
 
         service.findVacancies();
     }
