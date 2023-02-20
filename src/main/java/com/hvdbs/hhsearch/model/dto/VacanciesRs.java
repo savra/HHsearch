@@ -7,6 +7,9 @@ import java.util.List;
 
 @Data
 public class VacanciesRs {
-    private final List<VacancyItem> vacancyItemList = new ArrayList<>();
-    private Pagination pagination;
+    private final List<VacancyItem> items = new ArrayList<>();
+    private int found;
+    private int page;
+    private int pages;
+    private int perPage;
 }

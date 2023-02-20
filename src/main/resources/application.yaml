@@ -24,8 +24,11 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.orm.jpa.JpaTransactionManager: TRACE
 #    reactor.netty.http.client: DEBUG
-search-result:
-  per-page: 100
+
+hhsearch:
+  user-agent: ${USER_AGENT}
+  search-result:
+    per-page: 100
 ---
 spring:
   config:
