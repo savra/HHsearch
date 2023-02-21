@@ -74,8 +74,4 @@ public class HHsearchApplication {
 
         int g = 5;
     }
-
-    private void processVacancies(Stream<String> vacanciesId) {
-
-    }
 }

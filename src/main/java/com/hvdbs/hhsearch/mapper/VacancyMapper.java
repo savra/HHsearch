@@ -8,7 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface VacancyMapper {
     Vacancy toEntity(VacancyItem vacancyItem);
-
     default String mapKeySkill(VacancyItem.KeySkill keySkill) {
         return keySkill.getName();
     }
