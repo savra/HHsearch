@@ -8,10 +8,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -25,13 +25,23 @@ public class VacancyItem {
     private String description;
     @JsonProperty(value = "key_skills")
     private List<KeySkill> keySkills = new ArrayList<>();
-    @JsonProperty(value = "shedule.id")
+
+    @JsonProperty("schedule")
+    private void unpackSchedule(Map<String, Object> schedule) {
+        this.schedule = Schedule.of((String) schedule.get("id"));
+    }
+
     private Schedule schedule;
     @JsonProperty(value = "accept_handicapped")
     private boolean acceptHandicapped;
     @JsonProperty(value = "accept_kids")
     private boolean acceptKids;
-    @JsonProperty(value = "experience.id")
+
+    @JsonProperty("experience")
+    private void unpackExperience(Map<String, Object> experience) {
+        this.experience = Experience.of((String) experience.get("id"));
+    }
+
     private Experience experience;
     @JsonProperty(value = "alternate_url")
     @NotNull
@@ -39,12 +49,33 @@ public class VacancyItem {
     @JsonProperty(value = "apply_alternate_url")
     @NotNull
     private String applyAlternateUrl;
+
     private String code;
-    @JsonProperty(value = "employment.id")
+
+    private Salary salary;
+
+    @JsonProperty("employment")
+    private void unpackEmployment(Map<String, Object> employment) {
+        this.employment = Employment.of((String) employment.get("id"));
+    }
+
     private Employment employment;
 
     @Getter
+    @Setter
     public static class KeySkill {
         private String name;
+    }
+
+    @Getter
+    @Setter
+    public static class Salary {
+        private BigDecimal from;
+
+        private BigDecimal to;
+
+        private boolean gross;
+
+        private String currency;
     }
 }

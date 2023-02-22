@@ -8,7 +8,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -23,7 +25,6 @@ public class Vacancy {
     private String name;
     private boolean premium;
     private String description;
-    private String brandedDescription;
     @CollectionTable(name = "key_skill", joinColumns = @JoinColumn(name = "vacancy_id"))
     @Column(name = "name")
     @ElementCollection
@@ -41,6 +42,9 @@ public class Vacancy {
     private String code;
     @Enumerated(EnumType.STRING)
     private Employment employment;
+
+    @OneToOne(mappedBy = "vacancy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Salary salary;
 
     @Override
     public boolean equals(Object o) {

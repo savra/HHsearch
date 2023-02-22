@@ -12,7 +12,8 @@ CREATE TABLE vacancy
     alternate_url       VARCHAR2(500 char),
     apply_alternate_url VARCHAR2(500 char),
     code                VARCHAR2(500 char),
-    employment          VARCHAR2(500 char)
+    employment          VARCHAR2(500 char),
+    CONSTRAINT vacancy_pk PRIMARY KEY(ID)
 );
 
 COMMENT ON TABLE vacancy IS 'Вакансия';
@@ -35,7 +36,7 @@ CREATE SEQUENCE vacancy_seq START WITH 1 INCREMENT BY 1 NOCACHE;
 CREATE TABLE key_skill
 (
     ID         NUMBER(19),
-    name      VARCHAR2(100 CHAR),
+    name       VARCHAR2(100 CHAR),
     vacancy_id NUMBER(19) NOT NULL,
     CONSTRAINT pk_key_skill PRIMARY KEY (ID),
     CONSTRAINT fk_key_skill_vacancy FOREIGN KEY (vacancy_id) REFERENCES vacancy (ID) ON DELETE CASCADE
@@ -48,4 +49,26 @@ COMMENT ON COLUMN key_skill.vacancy_id IS 'Вакансия';
 
 CREATE SEQUENCE key_skill_seq START WITH 1 INCREMENT BY 1 NOCACHE;
 
-CREATE UNIQUE INDEX CUQ_KEY_SKILL_ID_VAC_ID ON key_skill(name, vacancy_id);
+CREATE UNIQUE INDEX CUQ_KEY_SKILL_ID_VAC_ID ON key_skill (name, vacancy_id);
+
+CREATE TABLE salary
+(
+    ID             NUMBER(19),
+    lower_boundary NUMBER(19, 2),
+    upper_boundary NUMBER(19, 2),
+    gross          NUMBER(1, 0),
+    currency       VARCHAR2(100 CHAR) NOT NULL,
+    vacancy_id     NUMBER(19)         NOT NULL,
+    CONSTRAINT pk_salary PRIMARY KEY (ID),
+    CONSTRAINT fk_salary_vacancy FOREIGN KEY (vacancy_id) REFERENCES vacancy (ID) ON DELETE CASCADE
+);
+
+COMMENT ON TABLE salary IS 'Ключевые навыки';
+COMMENT ON COLUMN salary.id IS 'Идентификатор (salary_seq)';
+COMMENT ON COLUMN salary.lower_boundary IS 'Нижняя граница вилки оклада';
+COMMENT ON COLUMN salary.upper_boundary IS 'Верняя граница вилки оклада';
+COMMENT ON COLUMN salary.gross IS 'Признак того что оклад указан до вычета налогов. В случае если не указано - null.';
+COMMENT ON COLUMN salary.currency IS 'Валюта';
+COMMENT ON COLUMN salary.vacancy_id IS 'Вакансия';
+
+CREATE SEQUENCE salary_seq START WITH 1 INCREMENT BY 1 NOCACHE;

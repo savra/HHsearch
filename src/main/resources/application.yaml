@@ -4,13 +4,13 @@ spring:
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
   flyway:
-    enabled: false
+    enabled: true
     password: ${DATASOURCE_PASSWORD}
     url: ${DATASOURCE_URL}
     user: ${DATASOURCE_USERNAME}
-    default-schema: ${DATASOURCE_USERNAME}
     baseline-on-migrate: true
     table: hh_schema_history
+    locations: classpath:db/migration/V1
   jpa:
     properties:
       hibernate:

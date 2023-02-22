@@ -1,9 +1,7 @@
 package com.hvdbs.hhsearch;
 
 import com.hvdbs.hhsearch.mapper.VacancyMapper;
-import com.hvdbs.hhsearch.model.dto.VacanciesRs;
 import com.hvdbs.hhsearch.model.dto.VacancyItem;
-import com.hvdbs.hhsearch.model.entity.Vacancy;
 import com.hvdbs.hhsearch.repository.VacancyRepository;
 import com.hvdbs.hhsearch.service.SearchService;
 import lombok.RequiredArgsConstructor;
@@ -14,18 +12,13 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -67,11 +60,10 @@ public class HHsearchApplication {
                                                     .map(VacancyItem::getVacancyId);
                                         })
                                         .flatMapMany(Flux::fromStream)
+                                        .take(1)
                                         .map(searchService::findVacancy)
                                         .flatMap(vacancyItem -> vacancyItem.map(vacancyMapper::toEntity)))
                 )
                 .subscribe(vacancyRepository::save);
-
-        int g = 5;
     }
 }
