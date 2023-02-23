@@ -1,7 +1,7 @@
 CREATE TABLE vacancy
 (
     id                  NUMBER(19),
-    vacancy_id          varchar2(20 char),
+    vacancy_id          varchar2(20 char) NOT NULL,
     name                varchar2(500 char),
     premium             NUMBER(1, 0) DEFAULT 0 NOT NULL,
     description         VARCHAR2(4000 char),
@@ -32,6 +32,8 @@ COMMENT ON COLUMN vacancy.code IS 'Внутренний код вакансии 
 COMMENT ON COLUMN vacancy.employment IS 'Тип занятости';
 
 CREATE SEQUENCE vacancy_seq START WITH 1 INCREMENT BY 1 NOCACHE;
+
+CREATE UNIQUE INDEX cuq_vacancy_id ON vacancy(vacancy_id);
 
 CREATE TABLE key_skill
 (

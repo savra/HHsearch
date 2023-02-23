@@ -51,11 +51,11 @@ public class Vacancy {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vacancy vacancy = (Vacancy) o;
-        return Objects.equals(id, vacancy.id);
+        return Objects.equals(id, vacancy.id) && vacancyId.equals(vacancy.vacancyId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, vacancyId);
     }
 }
