@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -45,6 +46,8 @@ public class Vacancy {
 
     @OneToOne(mappedBy = "vacancy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Salary salary;
+
+    private LocalDateTime lastUpdate;
 
     @Override
     public boolean equals(Object o) {

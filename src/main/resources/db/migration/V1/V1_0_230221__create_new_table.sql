@@ -13,6 +13,7 @@ CREATE TABLE vacancy
     apply_alternate_url VARCHAR2(500 char),
     code                VARCHAR2(500 char),
     employment          VARCHAR2(500 char),
+    last_update         TIMESTAMP,
     CONSTRAINT vacancy_pk PRIMARY KEY(ID)
 );
 
@@ -30,6 +31,7 @@ COMMENT ON COLUMN vacancy.alternate_url IS 'Ссылка на представл
 COMMENT ON COLUMN vacancy.apply_alternate_url IS 'Ссылка на отклик на вакансию на сайте';
 COMMENT ON COLUMN vacancy.code IS 'Внутренний код вакансии работадателя';
 COMMENT ON COLUMN vacancy.employment IS 'Тип занятости';
+COMMENT ON COLUMN vacancy.last_update IS 'Дата и время последнего обновления';
 
 CREATE SEQUENCE vacancy_seq START WITH 1 INCREMENT BY 1 NOCACHE;
 
