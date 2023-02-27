@@ -41,10 +41,7 @@ public class HHsearchApplication {
         AtomicInteger pageCount = new AtomicInteger(1);
 
         Flux.fromStream(Files.readAllLines(
-                                Paths.get(Objects.requireNonNull(
-                                                getClass()
-                                                        .getClassLoader()
-                                                        .getResource("search_keywords.txt"))
+                                Paths.get(Objects.requireNonNull(getClass().getResource("search_keywords.txt"))
                                         .toURI()))
                         .stream())
                 .flatMap(keyword ->
