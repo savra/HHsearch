@@ -13,11 +13,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import reactor.core.publisher.Flux;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Objects;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -37,30 +37,33 @@ public class HHsearchApplication {
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void run() throws URISyntaxException, IOException {
+    public void run() throws IOException {
         AtomicInteger pageCount = new AtomicInteger(1);
 
-        Flux.fromStream(Files.readAllLines(
-                                Paths.get(Objects.requireNonNull(getClass().getResource("search_keywords.txt"))
-                                        .toURI()))
-                        .stream())
-                .flatMap(keyword ->
-                        Flux.fromStream(Stream.iterate(0, page -> page < pageCount.get(), page -> page + 1))
-                                .flatMap(page -> searchService.findVacancies(keyword, page, perPage)
-                                        .map(vacanciesRs -> {
-                                            if (vacanciesRs.getPage() == 0) {
-                                                pageCount.set(vacanciesRs.getPages());
-                                            }
+        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("search_keywords.txt")) {
+            if (resourceAsStream != null) {
+                try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8))) {
+                    Flux.fromStream(bufferedReader.lines())
+                            .flatMap(keyword ->
+                                    Flux.fromStream(Stream.iterate(0, page -> page < pageCount.get(), page -> page + 1))
+                                            .flatMap(page -> searchService.findVacancies(keyword, page, perPage)
+                                                    .map(vacanciesRs -> {
+                                                        if (vacanciesRs.getPage() == 0) {
+                                                            pageCount.set(vacanciesRs.getPages());
+                                                        }
 
-                                            return vacanciesRs.getItems()
-                                                    .stream()
-                                                    .map(VacancyItem::getVacancyId);
-                                        })
-                                        .flatMapMany(Flux::fromStream)
-                                        .take(1)
-                                        .map(searchService::findVacancy)
-                                        .flatMap(vacancyItem -> vacancyItem.map(vacancyMapper::toEntity)))
-                )
-                .subscribe(vacancyRepository::save);
+                                                        return vacanciesRs.getItems()
+                                                                .stream()
+                                                                .map(VacancyItem::getVacancyId);
+                                                    })
+                                                    .flatMapMany(Flux::fromStream)
+                                                    .take(1)
+                                                    .map(searchService::findVacancy)
+                                                    .flatMap(vacancyItem -> vacancyItem.map(vacancyMapper::toEntity)))
+                            )
+                            .subscribe(vacancyRepository::save);
+                }
+            }
+        }
     }
 }
