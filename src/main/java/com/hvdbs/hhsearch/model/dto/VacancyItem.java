@@ -28,7 +28,9 @@ public class VacancyItem {
 
     @JsonProperty("schedule")
     private void unpackSchedule(Map<String, Object> schedule) {
-        this.schedule = Schedule.of((String) schedule.get("id"));
+        if (schedule != null) {
+            this.schedule = Schedule.of((String) schedule.get("id"));
+        }
     }
 
     private Schedule schedule;

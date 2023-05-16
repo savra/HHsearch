@@ -39,15 +39,12 @@ CREATE UNIQUE INDEX cuq_vacancy_id ON vacancy(vacancy_id);
 
 CREATE TABLE key_skill
 (
-    ID         NUMBER(19),
     name       VARCHAR2(100 CHAR),
     vacancy_id NUMBER(19) NOT NULL,
-    CONSTRAINT pk_key_skill PRIMARY KEY (ID),
     CONSTRAINT fk_key_skill_vacancy FOREIGN KEY (vacancy_id) REFERENCES vacancy (ID) ON DELETE CASCADE
 );
 
 COMMENT ON TABLE key_skill IS 'Ключевые навыки';
-COMMENT ON COLUMN key_skill.id IS 'Идентификатор (key_skill_seq)';
 COMMENT ON COLUMN key_skill.name IS 'Название ключевого навыка';
 COMMENT ON COLUMN key_skill.vacancy_id IS 'Вакансия';
 

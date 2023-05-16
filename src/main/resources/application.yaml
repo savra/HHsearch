@@ -23,12 +23,19 @@ logging:
   level:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.orm.jpa.JpaTransactionManager: TRACE
+    com.hvdbs.hhsearch: TRACE
+  logback:
+    rollingpolicy:
+      max-history: 20
+      max-file-size: 100KB
+      file-name-pattern: hhsearch-%d{yyyy-MM-dd}.%i.log.gz
+      total-size-cap: 2MB
+  file:
+    name: /log/SystemOut.log
 #    reactor.netty.http.client: DEBUG
 
 hhsearch:
-  user-agent: ${USER_AGENT}
-  search-result:
-    per-page: 100
+  user-agent: HHsearch/1.0 (savra.sv@yandex.ru)
 ---
 spring:
   config:
