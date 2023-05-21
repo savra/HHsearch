@@ -1,7 +1,7 @@
 package com.hvdbs.savra.hhsearchstartupservice.service;
 
-import com.hvdbs.hhsearch.model.dto.VacanciesRs;
-import com.hvdbs.hhsearch.model.dto.VacancyItem;
+import com.hvdbs.savra.hhsearchstartupservice.model.dto.VacanciesRs;
+import com.hvdbs.savra.hhsearchstartupservice.model.dto.VacancyItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

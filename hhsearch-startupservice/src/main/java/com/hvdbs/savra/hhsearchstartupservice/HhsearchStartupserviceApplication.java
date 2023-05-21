@@ -1,8 +1,16 @@
 package com.hvdbs.savra.hhsearchstartupservice;
 
 import com.hvdbs.savra.hhsearchstartupservice.mapper.VacancyMapper;
+import com.hvdbs.savra.hhsearchstartupservice.model.dto.VacancyItem;
 import com.hvdbs.savra.hhsearchstartupservice.repository.VacancyRepository;
 import com.hvdbs.savra.hhsearchstartupservice.service.SearchService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import reactor.core.publisher.Flux;
 
 import java.io.BufferedReader;
 import java.io.IOException;
