@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hhsearch-startupservice
+  labels:
+    app: hhsearch-startupservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hhsearch-startupservice
+  template:
+    metadata:
+      labels:
+        app: hhsearch-startupservice
+    spec:
+      containers:
+        - name: hhsearch-startupservice
+          image: savrawar/hhsearch-startupservice:0.0.1
+          imagePullPolicy: Always
