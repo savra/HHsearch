@@ -1,0 +1,25 @@
+replicaCount: 1
+
+app:
+  image: savrawar/hhsearch-startupservice:0.0.1
+  resources:
+    limits:
+      cpu: 300m
+      memory: 500Mi
+    requests:
+      cpu: 300m
+      memory: 500Mi
+
+elasticsearch:
+  host: elasticsearch
+  port: 9200
+
+fluent:
+  image: fluent/fluent-bit
+  resources:
+    limits:
+      cpu: 200m
+      memory: 50Mi
+    requests:
+      cpu: 200m
+      memory: 50Mi

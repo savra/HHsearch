@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.app.image }}
+          imagePullPolicy: Always
+          resources:
+{{ toYaml .Values.app.resources | indent 12 }}
+          volumeMounts:
+            - mountPath: /log
+              name: logs
+            - mountPath: /conf
+              name: log-config-volume
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: >
+                -Dlogging.config=/conf/logback.xml
+        - name: fluent-bit
+          image: {{ .Values.fluent.image }}
+          imagePullPolicy: Always
+          resources:
+{{ toYaml .Values.fluent.resources | indent 12 }}
+          volumeMounts:
+            - mountPath: /log
+              name: logs
+            - mountPath: /fluent-bit/etc/
+              name: fluent-bit-volume
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          ports:
+            - containerPort: 9200
+              hostPort: 9200
+      volumes:
+        - name: logs
+          emptyDir: {}
+        - name: log-config-volume
+          configMap:
+            name: {{ .Chart.Name }}-log-cm
+        - name: fluent-bit-volume
+          configMap:
+            name: {{ .Chart.Name }}-fluent-bit-cm

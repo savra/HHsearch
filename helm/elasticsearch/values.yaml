@@ -1,0 +1,4 @@
+replicaCount: 1
+
+app:
+  image: elastic/elasticsearch:8.6.2

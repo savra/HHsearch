@@ -1,0 +1,12 @@
+replicaCount: 1
+
+app:
+  image: "elastic/kibana:8.6.2"
+  resources:
+    limits:
+      cpu: 1000m
+    requests:
+      cpu: 100m
+  elasticsearch:
+    host: http://elasticsearch:9200
+    port: 9200

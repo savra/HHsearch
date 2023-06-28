@@ -31,7 +31,6 @@ public class WebClientConfiguration {
                         .resolver(DefaultAddressResolverGroup.INSTANCE));
 
         return WebClient.builder()
-                .baseUrl(BASE_URL)
                 .filter(logRequest())
                 .filter(logResponse())
                 .clientConnector(httpConnector)
