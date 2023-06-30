@@ -27,7 +27,7 @@ public class WebClientConfiguration {
                         .doOnConnected(connection ->
                                 connection.addHandlerLast(new ReadTimeoutHandler(TIMEOUT))
                                         .addHandlerLast(new WriteTimeoutHandler(TIMEOUT)))
-                       // .wiretap("reactor.netty.http.client.HttpClient", LogLevel.DEBUG, AdvancedByteBufFormat.TEXTUAL)
+                       //.wiretap("reactor.netty.http.client.HttpClient", LogLevel.DEBUG, AdvancedByteBufFormat.TEXTUAL)
                         .resolver(DefaultAddressResolverGroup.INSTANCE));
 
         return WebClient.builder()

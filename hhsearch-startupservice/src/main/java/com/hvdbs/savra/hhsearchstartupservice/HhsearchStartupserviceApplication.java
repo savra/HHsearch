@@ -1,7 +1,5 @@
 package com.hvdbs.savra.hhsearchstartupservice;
 
-import com.hvdbs.savra.hhsearchstartupservice.mapper.VacancyMapper;
-import com.hvdbs.savra.hhsearchstartupservice.repository.VacancyRepository;
 import com.hvdbs.savra.hhsearchstartupservice.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +15,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 public class HhsearchStartupserviceApplication {
     private final FileService fileService;
-    private final VacancyMapper vacancyMapper;
+   /* private final VacancyMapper vacancyMapper;
     private final VacancyRepository vacancyRepository;
 
-    private static final int perPage = 100;
+    private static final int perPage = 100;*/
 
     public static void main(String[] args) {
         SpringApplication.run(HhsearchStartupserviceApplication.class, args);
@@ -29,7 +27,6 @@ public class HhsearchStartupserviceApplication {
     @EventListener(ApplicationReadyEvent.class)
     public void run() {
         fileService.readKeyword();
-        refreshVacancies();
 //        AtomicInteger pageCount = new AtomicInteger(1);
 //        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("search_keywords.txt")) {
 //            if (resourceAsStream != null) {
@@ -56,23 +53,5 @@ public class HhsearchStartupserviceApplication {
 //                }
 //            }
 //        }
-    }
-
-    //TODO  @Scheduled() Запуск чтения ключевых
-    // слов из файла и отправка в сервис поиска
-    // поиска вакансий по ключевым словам каждый день в 22:00 мск - получить вакансии и сохранить в базу
-    //
-    private void refreshVacancies() {
-
-        /*
-        1. Текущий сервис в методе @Scheduled() (Должна быть кластерное планирование) инициализирует запуск чтения ключевых
-        слов из файла и отправляет эти ключевые слова в searchService post-запросом (Тут как раз область для проверки rateLimit - ограничение скорости отправки, чтобы не
-        задудосить serarchService
-        2. searchService запрашивает вакансии из HH по ключевым словам и сохраняет их в свою схему БД и отправляет вакансии в топик vacancies в кафку
-        *
-        3. reportService читает необработанные записи из кафки и сохраняет в свою схему БД. Далее читает из БД парсит данные, формирует отчет и
-        // сохраняет этот отчет в БД и отправляет в кафку сообщение о том, что был сформирован новый отчет с именем отчета
-        // mailService по событию из кафки читает из бады отчет и с прочитанным из кафки именем и отправляет отчет на email
-        */
     }
 }
