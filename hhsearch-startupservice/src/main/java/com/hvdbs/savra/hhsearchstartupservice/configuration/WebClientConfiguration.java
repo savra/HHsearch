@@ -5,6 +5,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import io.netty.resolver.DefaultAddressResolverGroup;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -18,6 +19,8 @@ import reactor.netty.http.client.HttpClient;
 public class WebClientConfiguration {
     private static final String BASE_URL = "https://api.hh.ru/";
     private static final int TIMEOUT = 5_0000;
+    @Value("${hhsearch.searchservice_host}")
+    private String baseUrl;
 
     @Bean
     public WebClient webClient() {
@@ -31,6 +34,7 @@ public class WebClientConfiguration {
                         .resolver(DefaultAddressResolverGroup.INSTANCE));
 
         return WebClient.builder()
+                .baseUrl(baseUrl)
                 .filter(logRequest())
                 .filter(logResponse())
                 .clientConnector(httpConnector)

@@ -26,7 +26,7 @@ public class HhsearchStartupserviceApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void run() {
-        fileService.readKeyword();
+        fileService.readKeywords();
 //        AtomicInteger pageCount = new AtomicInteger(1);
 //        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("search_keywords.txt")) {
 //            if (resourceAsStream != null) {
