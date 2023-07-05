@@ -1,7 +1,7 @@
-package com.hvdbs.savra.hhsearchstartupservice.mapper;
+package com.hvdbs.savra.hhsearchsearchservice.mapper;
 
-import com.hvdbs.savra.hhsearchstartupservice.model.dto.VacancyItem;
-import com.hvdbs.savra.hhsearchstartupservice.model.entity.Vacancy;
+import com.hvdbs.savra.hhsearchsearchservice.model.dto.VacancyItem;
+import com.hvdbs.savra.hhsearchsearchservice.model.entity.Vacancy;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

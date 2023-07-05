@@ -1,8 +1,8 @@
-package com.hvdbs.savra.hhsearchstartupservice.model.entity;
+package com.hvdbs.savra.hhsearchsearchservice.model.entity;
 
-import com.hvdbs.savra.hhsearchstartupservice.model.enums.Employment;
-import com.hvdbs.savra.hhsearchstartupservice.model.enums.Experience;
-import com.hvdbs.savra.hhsearchstartupservice.model.enums.Schedule;
+import com.hvdbs.savra.hhsearchsearchservice.model.enums.Employment;
+import com.hvdbs.savra.hhsearchsearchservice.model.enums.Experience;
+import com.hvdbs.savra.hhsearchsearchservice.model.enums.Schedule;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

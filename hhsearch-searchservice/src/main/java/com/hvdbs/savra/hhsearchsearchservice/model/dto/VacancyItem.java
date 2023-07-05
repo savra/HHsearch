@@ -1,9 +1,9 @@
-package com.hvdbs.savra.hhsearchstartupservice.model.dto;
+package com.hvdbs.savra.hhsearchsearchservice.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hvdbs.savra.hhsearchstartupservice.model.enums.Employment;
-import com.hvdbs.savra.hhsearchstartupservice.model.enums.Experience;
-import com.hvdbs.savra.hhsearchstartupservice.model.enums.Schedule;
+import com.hvdbs.savra.hhsearchsearchservice.model.enums.Employment;
+import com.hvdbs.savra.hhsearchsearchservice.model.enums.Experience;
+import com.hvdbs.savra.hhsearchsearchservice.model.enums.Schedule;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;

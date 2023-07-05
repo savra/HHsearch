@@ -1,4 +1,4 @@
-package com.hvdbs.savra.hhsearchstartupservice.model.dto;
+package com.hvdbs.savra.hhsearchsearchservice.model.dto;
 
 import lombok.Data;
 

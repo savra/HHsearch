@@ -1,34 +1,31 @@
-package com.hvdbs.savra.hhsearchstartupservice.service;
+package com.hvdbs.savra.hhsearchsearchservice.service;
 
-import com.hvdbs.savra.hhsearchstartupservice.model.dto.VacanciesRs;
-import com.hvdbs.savra.hhsearchstartupservice.model.dto.VacancyItem;
+import com.hvdbs.savra.hhsearchsearchservice.model.dto.VacanciesRs;
+import com.hvdbs.savra.hhsearchsearchservice.model.dto.VacancyItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Service
 public class SearchServiceImpl implements SearchService {
-    private final WebClient webClient;
     private static final String userAgent = "HHsearch/1.0 (savra.sv@yandex.ru)";
 
-    public Mono<VacanciesRs> findVacancies(String keyword, int page, int perPage) {
-        return webClient.get()
+    public VacanciesRs findVacancies(String keyword, int page, int perPage) {
+        return null; /*webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/vacancies")
                         .queryParam("text", keyword)
                         .queryParam("per_page", perPage)
                         .build()
                 )
                 .headers(httpHeaders -> httpHeaders.add("User-Agent", userAgent))
-                .exchangeToMono(clientResponse -> clientResponse.bodyToMono(VacanciesRs.class));
+                .exchangeToMono(clientResponse -> clientResponse.bodyToMono(VacanciesRs.class));*/
     }
 
     @Override
-    public Mono<VacancyItem> findVacancy(String vacancyId) {
-        return webClient.get()
+    public VacancyItem findVacancy(String vacancyId) {
+        return null; /*webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/vacancies/" + vacancyId).build())
                 .headers(httpHeaders -> httpHeaders.add("User-Agent", userAgent))
-                .exchangeToMono(clientResponse -> clientResponse.bodyToMono(VacancyItem.class));
+                .exchangeToMono(clientResponse -> clientResponse.bodyToMono(VacancyItem.class));*/
     }
 }

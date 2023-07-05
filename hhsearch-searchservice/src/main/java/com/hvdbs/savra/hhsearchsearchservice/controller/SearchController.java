@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SearchController {
 
     @PostMapping("/vacancies/{keyword}")
-    void findVacancies(@PathVariable String keyword) throws InterruptedException {
+    void findVacancies(@PathVariable String keyword) {
         System.out.println("Получено ключевое слово " + keyword);
     }
 }

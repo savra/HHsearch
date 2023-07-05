@@ -1,4 +1,4 @@
-package com.hvdbs.savra.hhsearchstartupservice.model.entity;
+package com.hvdbs.savra.hhsearchsearchservice.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

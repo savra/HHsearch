@@ -1,9 +1,9 @@
-package com.hvdbs.savra.hhsearchstartupservice.mapper;
+package com.hvdbs.savra.hhsearchsearchservice.mapper;
 
-import com.hvdbs.savra.hhsearchstartupservice.model.dto.VacancyItem;
-import com.hvdbs.savra.hhsearchstartupservice.model.entity.Vacancy;
-import com.hvdbs.savra.hhsearchstartupservice.repository.SalaryRepository;
-import com.hvdbs.savra.hhsearchstartupservice.repository.VacancyRepository;
+import com.hvdbs.savra.hhsearchsearchservice.model.dto.VacancyItem;
+import com.hvdbs.savra.hhsearchsearchservice.model.entity.Vacancy;
+import com.hvdbs.savra.hhsearchsearchservice.repository.SalaryRepository;
+import com.hvdbs.savra.hhsearchsearchservice.repository.VacancyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 

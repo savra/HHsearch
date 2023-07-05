@@ -1,4 +1,4 @@
-package com.hvdbs.savra.hhsearchstartupservice.model.enums;
+package com.hvdbs.savra.hhsearchsearchservice.model.enums;
 
 import lombok.Getter;
 
