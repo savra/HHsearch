@@ -5,9 +5,10 @@ import com.hvdbs.savra.hhsearchsearchservice.model.entity.Vacancy;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 
 @DecoratedWith(VacancyMapperDecorator.class)
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface VacancyMapper {
     @Mapping(source = "salary.from", target = "salary.lowerBoundary")
     @Mapping(source = "salary.to", target = "salary.upperBoundary")

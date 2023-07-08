@@ -15,10 +15,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 public class HhsearchStartupserviceApplication {
     private final FileService fileService;
-   /* private final VacancyMapper vacancyMapper;
-    private final VacancyRepository vacancyRepository;
-
-    private static final int perPage = 100;*/
 
     public static void main(String[] args) {
         SpringApplication.run(HhsearchStartupserviceApplication.class, args);

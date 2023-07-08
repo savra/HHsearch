@@ -23,15 +23,24 @@ public abstract class VacancyMapperDecorator implements VacancyMapper {
     @Override
     public Vacancy toEntity(VacancyItem vacancyItem) {
         Vacancy vacancy = delegate.toEntity(vacancyItem);
-        Vacancy v = vacancyRepository.findByVacancyId(vacancy.getVacancyId());
 
-        if (v != null) {
-            vacancy.setId(v.getId());
-            vacancy.getSalary().setId(v.getSalary().getId());
+        if (vacancy != null) {
+            Vacancy currentVacancy = vacancyRepository.findByVacancyId(vacancy.getVacancyId());
+
+            if (currentVacancy != null) {
+                vacancy.setId(currentVacancy.getId());
+
+                if (vacancy.getSalary() != null && currentVacancy.getSalary() != null) {
+                    vacancy.getSalary().setId(currentVacancy.getSalary().getId());
+                }
+            }
+
+            vacancy.setLastUpdate(LocalDateTime.now());
+
+            if (vacancy.getSalary() != null) {
+                vacancy.getSalary().setVacancy(vacancy);
+            }
         }
-
-        vacancy.setLastUpdate(LocalDateTime.now());
-        vacancy.getSalary().setVacancy(vacancy);
 
         return vacancy;
     }

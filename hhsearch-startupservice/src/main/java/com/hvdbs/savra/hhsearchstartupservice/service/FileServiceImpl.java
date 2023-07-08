@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.AbstractMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,16 +37,20 @@ public class FileServiceImpl implements FileService {
                             .log()
                             .limitRate(10)
                             .flatMap(keyword ->
-                                    webClient.post()
+                                    webClient.get()
                                             .uri(SEARCH_SERVICE_HOST, keyword)
                                             .retrieve()
-                                            .bodyToMono(Void.class)
+                                            .bodyToMono(Integer.class)
+                                            .map(successCount -> new AbstractMap.SimpleEntry<>(keyword, successCount))
                                             .doOnError(throwable ->
                                                     log.error(String.format("Во время отправки ключевого слова \"%s\" в search service произошла ошибка: %s",
                                                             keyword,
-                                                            throwable.getMessage()))))
-                            .doFinally(signalType -> log.info("Файл прочитан, данные отправлены в searchservice"))
+                                                            throwable.getMessage())))
+                            )
                             .retryWhen(Retry.backoff(3, Duration.ofSeconds(5)).jitter(0.75))
+                            .doOnNext(response -> log.info("Ключевое слово \"" + response.getKey()
+                                    + "\" обработано. Сохранено " + response.getValue() + " вакансий"))
+                            .doFinally(signalType -> log.info("Все ключевые слова обработаны"))
                             .subscribe();
                 }
             }

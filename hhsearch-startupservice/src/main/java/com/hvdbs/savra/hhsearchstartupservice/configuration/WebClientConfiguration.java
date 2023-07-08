@@ -17,7 +17,6 @@ import reactor.netty.http.client.HttpClient;
 @Slf4j
 @Configuration
 public class WebClientConfiguration {
-    private static final String BASE_URL = "https://api.hh.ru/";
     private static final int TIMEOUT = 5_0000;
     @Value("${hhsearch.searchservice_host}")
     private String baseUrl;
@@ -44,7 +43,6 @@ public class WebClientConfiguration {
     private ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
             log.info("""
-            
             Request
                 Method: {}
                 URL: {}
