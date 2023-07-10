@@ -1,20 +1,25 @@
 package com.hvdbs.savra.hhsearchsearchservice.dataservice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hvdbs.savra.hhsearchsearchservice.mapper.VacancyMapper;
 import com.hvdbs.savra.hhsearchsearchservice.model.dto.VacancyItem;
 import com.hvdbs.savra.hhsearchsearchservice.model.entity.Vacancy;
 import com.hvdbs.savra.hhsearchsearchservice.repository.VacancyRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class SearchDataServiceImpl implements SearchDataService {
@@ -24,6 +29,10 @@ public class SearchDataServiceImpl implements SearchDataService {
     private final VacancyMapper vacancyMapper;
     private final VacancyRepository vacancyRepository;
     private final RestTemplate restTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    @Value("${app.kafka.topic}")
+    private String vacanciesTopic;
+    private final ObjectMapper objectMapper;
 
     @Override
     public int saveAll(List<VacancyItem> vacanciesItems) {
@@ -31,12 +40,27 @@ public class SearchDataServiceImpl implements SearchDataService {
         List<Vacancy> vacancyList = new ArrayList<>();
 
         for (VacancyItem vacancyItem : vacanciesItems) {
-            vacancyList.add(vacancyMapper.toEntity(findVacancy(vacancyItem.getVacancyId())));
+            Vacancy vacancy = vacancyMapper.toEntity(findVacancy(vacancyItem.getVacancyId()));
+            vacancyList.add(vacancy);
+
+            try {
+                kafkaTemplate.send(vacanciesTopic, objectMapper.writeValueAsString(vacancy));
+            } catch (JsonProcessingException e) {
+                log.error("Ошибка сериализации вакансии с id " + vacancy.getVacancyId());
+            }
 
             successCount++;
         }
 
         vacancyRepository.saveAll(vacancyList);
+
+        for (Vacancy vacancy: vacancyList) {
+            try {
+                kafkaTemplate.send(vacanciesTopic, objectMapper.writeValueAsString(vacancy));
+            } catch (JsonProcessingException e) {
+                log.error("Ошибка сериализации Вакансии с id " + vacancy.getVacancyId());
+            }
+        }
 
         return successCount;
     }
