@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hvdbs.savra.hhsearchsearchservice.mapper.VacancyMapper;
 import com.hvdbs.savra.hhsearchsearchservice.model.dto.VacancyItem;
 import com.hvdbs.savra.hhsearchsearchservice.model.entity.Vacancy;
+import com.hvdbs.savra.hhsearchsearchservice.model.event.VacancyEvent;
 import com.hvdbs.savra.hhsearchsearchservice.repository.VacancyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,20 +44,22 @@ public class SearchDataServiceImpl implements SearchDataService {
             Vacancy vacancy = vacancyMapper.toEntity(findVacancy(vacancyItem.getVacancyId()));
             vacancyList.add(vacancy);
 
-            try {
-                kafkaTemplate.send(vacanciesTopic, objectMapper.writeValueAsString(vacancy));
-            } catch (JsonProcessingException e) {
-                log.error("Ошибка сериализации вакансии с id " + vacancy.getVacancyId());
-            }
-
             successCount++;
         }
 
         vacancyRepository.saveAll(vacancyList);
 
-        for (Vacancy vacancy: vacancyList) {
+        for (Vacancy vacancy : vacancyList) {
             try {
-                kafkaTemplate.send(vacanciesTopic, objectMapper.writeValueAsString(vacancy));
+                VacancyEvent vacancyEvent = new VacancyEvent();
+                vacancyEvent.setName(vacancy.getName());
+                vacancyEvent.setUrl(vacancy.getAlternateUrl());
+                vacancyEvent.setExperience(vacancy.getExperience().getDescription());
+                vacancyEvent.setLowerBoundarySalary(vacancy.getSalary().getLowerBoundary());
+                vacancyEvent.setUpperBoundarySalary(vacancy.getSalary().getUpperBoundary());
+                vacancyEvent.setKeySkills(String.join(",", vacancy.getKeySkills()));
+
+                kafkaTemplate.send(vacanciesTopic, objectMapper.writeValueAsString(vacancyEvent));
             } catch (JsonProcessingException e) {
                 log.error("Ошибка сериализации Вакансии с id " + vacancy.getVacancyId());
             }
