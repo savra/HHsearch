@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  startupservice:
+    build: hhsearch-startupservice/
+    image: savrawar/hhsearch-startupservice:0.0.1
+  searchservice:
+    build: hhsearch-searchservice/
+    image: savrawar/hhsearch-searchservice:0.0.1
+  reportservice:
+    build: hhsearch-reportservice/
+    image: savrawar/hhsearch-reportservice:0.0.1
+  mailservice:
+    build: hhsearch-mailservice/
+    image: savrawar/hhsearch-mailservice:0.0.1

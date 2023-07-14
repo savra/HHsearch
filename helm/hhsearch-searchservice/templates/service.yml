@@ -9,7 +9,7 @@ spec:
     app: {{ .Chart.Name }}
   ports:
     - port: {{ .Values.app.port }}
-      targetPort: {{ .Values.app.nodePort }}
+      targetPort: {{ .Values.app.port }}
       protocol: TCP
       name: app-port
-  type: NodePort
+  type: ClusterIP

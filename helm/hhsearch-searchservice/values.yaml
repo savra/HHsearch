@@ -1,7 +1,7 @@
 replicaCount: 1
 
 app:
-  image: savrawar/hhsearch-startupservice:0.0.1
+  image: savrawar/hhsearch-searchservice:0.0.1
   resources:
     limits:
       cpu: 300m
@@ -9,9 +9,7 @@ app:
     requests:
       cpu: 300m
       memory: 500Mi
-  port: 8443
-  nodePort: 30443
-
+  port: 443
 elasticsearch:
   host: elasticsearch
   port: 9200
