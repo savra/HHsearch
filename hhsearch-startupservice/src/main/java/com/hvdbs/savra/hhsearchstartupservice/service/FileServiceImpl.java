@@ -27,7 +27,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public void readKeywords() {
         log.info("Запустилось чтение файла с ключевыми словами");
-
+        //TODO В файле сейчас только 1 ключевое слово
         try (InputStream keywordsFile = getClass().getClassLoader().getResourceAsStream("search_keywords.txt")) {
             if (keywordsFile != null) {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(keywordsFile, StandardCharsets.UTF_8))) {

@@ -29,7 +29,7 @@ import java.security.cert.CertificateException;
 @Slf4j
 @Configuration
 public class WebClientConfiguration {
-    private static final int TIMEOUT = 5_0000;
+    private static final int TIMEOUT = 5000;
     @Value("${app.search-service.host}")
     private String baseUrl;
     @Value("${app.ssl.key-store-type}")

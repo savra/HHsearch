@@ -13,15 +13,15 @@ import java.util.Objects;
 @Table(name = "vacancy")
 public class Vacancy {
     @Id
-    @GeneratedValue(generator = "vacancy_seq", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "vacancy_seq", sequenceName = "vacancy_seq", allocationSize = 1)
+    @GeneratedValue(generator = "vacancy_id_seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "vacancy_id_seq", sequenceName = "vacancy_id_seq", allocationSize = 1)
     private Long id;
     private String name;
     private String experience;
     private String url;
     private BigDecimal lowerBoundarySalary;
     private BigDecimal upperBoundarySalary;
-    private String keySkill;
+    private String keySkills;
 
     @Override
     public boolean equals(Object o) {

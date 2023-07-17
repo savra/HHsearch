@@ -43,7 +43,7 @@ public class SearchDataServiceImpl implements SearchDataService {
             vacancyList.add(vacancy);
 
             successCount++;
-            break;  //TODO Вернуть полный обход, убрать брейк
+           // break;  //TODO Вернуть полный обход, убрать брейк
         }
 
         vacancyRepository.saveAll(vacancyList);

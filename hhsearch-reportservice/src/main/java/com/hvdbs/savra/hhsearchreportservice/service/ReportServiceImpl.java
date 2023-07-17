@@ -1,5 +1,6 @@
 package com.hvdbs.savra.hhsearchreportservice.service;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.poi.util.TempFile;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -12,13 +13,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ReportServiceImpl implements ReportService {
     private static final List<String> HEADER = List.of("Название вакансии", "Необходимое кол-во опыта", "url",
             "Зарплата после вычета налога (чистыми) в рублях по курсу ЦБ на сегодня", "Список ключевых навыков");
 
+    private final VacancyService vacancyService;
+
     @Override
     public byte[] getReport() throws IOException {
+
         try (SXSSFWorkbook wb = new SXSSFWorkbook()) {
             SXSSFSheet sheet = wb.createSheet();
             sheet.trackAllColumnsForAutoSizing();

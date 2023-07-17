@@ -11,7 +11,7 @@ function App() {
     const [loading, setLoading] = useState(true)
 
     const handleButtonClick = () => {
-        fetch("http://localhost:8080/api/v1/report")
+        fetch("http://localhost:8445/api/v1/report")
             .then(response => {
                 if (response.ok) {
                     return response.blob()
