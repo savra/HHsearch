@@ -35,3 +35,7 @@ build/
 /mvnw
 /mvnw.cmd
 /.run/startupservice.run.xml
+/hhsearch-startupservice/src/main/resources/application.yaml
+/hhsearch-searchservice/src/main/resources/application.yaml
+/hhsearch-reportservice/src/main/resources/application.yaml
+/hhsearch-mailservice/src/main/resources/application.yaml
