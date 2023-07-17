@@ -45,8 +45,8 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
           ports:
-            - containerPort: 9200
-              hostPort: 9200
+            - containerPort: {{ .Values.elasticsearch.port }}
+              hostPort: 9202
       volumes:
         - name: logs
           emptyDir: {}

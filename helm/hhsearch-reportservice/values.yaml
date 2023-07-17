@@ -10,11 +10,9 @@ app:
       cpu: 300m
       memory: 500Mi
   port: 8445
-
 elasticsearch:
   host: elasticsearch
   port: 9200
-
 fluent:
   image: fluent/fluent-bit
   resources:

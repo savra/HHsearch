@@ -19,7 +19,6 @@ import reactor.netty.http.client.HttpClient;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -52,11 +51,11 @@ public class WebClientConfiguration {
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 
         KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-        keyStore.load(new FileInputStream((ResourceUtils.getFile(keyStorePath))), keyStorePassword.toCharArray());
+        keyStore.load(ResourceUtils.getURL(keyStorePath).openStream(), keyStorePassword.toCharArray());
         keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
 
         KeyStore trustStore = KeyStore.getInstance(trustStoreType);
-        trustStore.load(new FileInputStream((ResourceUtils.getFile(trustStorePath))), trustStorePassword.toCharArray());
+        trustStore.load(ResourceUtils.getURL(trustStorePath).openStream(), trustStorePassword.toCharArray());
         trustManagerFactory.init(trustStore);
 
         SslContext sslContext = SslContextBuilder

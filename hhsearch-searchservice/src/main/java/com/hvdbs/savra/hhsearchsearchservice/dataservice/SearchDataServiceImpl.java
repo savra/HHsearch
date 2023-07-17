@@ -1,9 +1,8 @@
 package com.hvdbs.savra.hhsearchsearchservice.dataservice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hvdbs.savra.hhsearchsearchservice.mapper.VacancyMapper;
 import com.hvdbs.savra.hhsearchsearchservice.model.dto.VacancyItem;
+import com.hvdbs.savra.hhsearchsearchservice.model.entity.Salary;
 import com.hvdbs.savra.hhsearchsearchservice.model.entity.Vacancy;
 import com.hvdbs.savra.hhsearchsearchservice.model.event.VacancyEvent;
 import com.hvdbs.savra.hhsearchsearchservice.repository.VacancyRepository;
@@ -30,10 +29,9 @@ public class SearchDataServiceImpl implements SearchDataService {
     private final VacancyMapper vacancyMapper;
     private final VacancyRepository vacancyRepository;
     private final RestTemplate restTemplate;
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, VacancyEvent> kafkaTemplate;
     @Value("${app.kafka.topic}")
     private String vacanciesTopic;
-    private final ObjectMapper objectMapper;
 
     @Override
     public int saveAll(List<VacancyItem> vacanciesItems) {
@@ -45,27 +43,36 @@ public class SearchDataServiceImpl implements SearchDataService {
             vacancyList.add(vacancy);
 
             successCount++;
+            break;  //TODO Вернуть полный обход, убрать брейк
         }
 
         vacancyRepository.saveAll(vacancyList);
 
         for (Vacancy vacancy : vacancyList) {
-            try {
-                VacancyEvent vacancyEvent = new VacancyEvent();
-                vacancyEvent.setName(vacancy.getName());
-                vacancyEvent.setUrl(vacancy.getAlternateUrl());
-                vacancyEvent.setExperience(vacancy.getExperience().getDescription());
-                vacancyEvent.setLowerBoundarySalary(vacancy.getSalary().getLowerBoundary());
-                vacancyEvent.setUpperBoundarySalary(vacancy.getSalary().getUpperBoundary());
-                vacancyEvent.setKeySkills(String.join(",", vacancy.getKeySkills()));
+            VacancyEvent vacancyEvent = new VacancyEvent();
+            vacancyEvent.setName(vacancy.getName());
+            vacancyEvent.setUrl(vacancy.getAlternateUrl());
+            vacancyEvent.setExperience(vacancy.getExperience().getDescription());
+            Salary salary = vacancy.getSalary();
 
-                kafkaTemplate.send(vacanciesTopic, objectMapper.writeValueAsString(vacancyEvent));
-            } catch (JsonProcessingException e) {
-                log.error("Ошибка сериализации Вакансии с id " + vacancy.getVacancyId());
+            if (salary != null) {
+                vacancyEvent.setLowerBoundarySalary(salary.getLowerBoundary());
+                vacancyEvent.setUpperBoundarySalary(salary.getUpperBoundary());
             }
+
+            vacancyEvent.setKeySkills(String.join(",", vacancy.getKeySkills()));
+
+            kafkaTemplate.send(vacanciesTopic, vacancyEvent);
         }
 
         return successCount;
+    }
+
+    @Override
+    public void kafka(String message) {
+        VacancyEvent vacancyEvent = new VacancyEvent();
+        vacancyEvent.setName("TEST KAFKA " + message);
+        kafkaTemplate.send(vacanciesTopic, vacancyEvent);
     }
 
     public VacancyItem findVacancy(String vacancyId) {

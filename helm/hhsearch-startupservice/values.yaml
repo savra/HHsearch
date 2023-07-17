@@ -11,11 +11,9 @@ app:
       memory: 500Mi
   port: 8443
   nodePort: 30443
-
 elasticsearch:
   host: elasticsearch
   port: 9200
-
 fluent:
   image: fluent/fluent-bit
   resources:

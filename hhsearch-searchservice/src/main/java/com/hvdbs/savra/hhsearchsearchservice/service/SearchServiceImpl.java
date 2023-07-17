@@ -1,5 +1,6 @@
 package com.hvdbs.savra.hhsearchsearchservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hvdbs.savra.hhsearchsearchservice.dataservice.SearchDataService;
 import com.hvdbs.savra.hhsearchsearchservice.model.dto.VacanciesRs;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -41,6 +42,11 @@ public class SearchServiceImpl implements SearchService {
         return successCount;
     }
 
+    //TODO Удалить метод
+    public void kafka(String message) throws JsonProcessingException {
+        searchDataService.kafka(message);
+    }
+
     public VacanciesRs findVacancies(String keyword, int page, int perPage) {
         return restTemplate.getForEntity(
                         UriComponentsBuilder.fromHttpUrl(baseUrl + "/vacancies")
@@ -52,7 +58,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     private int defaultVacancy(Exception e) {
-        log.error("Search service недоступен. Вызван fallback метод");
+        log.error("Search service недоступен. Вызван fallback метод", e);
 
         return 0;
     }

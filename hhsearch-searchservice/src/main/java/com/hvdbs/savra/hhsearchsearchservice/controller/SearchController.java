@@ -1,5 +1,6 @@
 package com.hvdbs.savra.hhsearchsearchservice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hvdbs.savra.hhsearchsearchservice.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,11 @@ public class SearchController {
 
     @GetMapping("/vacancies/{keyword}")
     int findVacancies(@PathVariable String keyword) {
-         return searchService.findVacancies(keyword);
+        return searchService.findVacancies(keyword);
+    }
+
+    @GetMapping("/vacancies/kafka")
+    void kafka(String message) throws JsonProcessingException {
+        searchService.kafka(message);
     }
 }

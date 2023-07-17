@@ -1,4 +1,4 @@
-package com.hvdbs.savra.hhsearchreportservice.model;
+package com.hvdbs.savra.hhsearchreportservice.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

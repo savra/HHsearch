@@ -9,7 +9,7 @@ app:
     requests:
       cpu: 300m
       memory: 500Mi
-  port: 443
+  port: 8444
 elasticsearch:
   host: elasticsearch
   port: 9200
