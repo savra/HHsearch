@@ -58,6 +58,8 @@ public class SearchDataServiceImpl implements SearchDataService {
             if (salary != null) {
                 vacancyEvent.setLowerBoundarySalary(salary.getLowerBoundary());
                 vacancyEvent.setUpperBoundarySalary(salary.getUpperBoundary());
+                vacancyEvent.setGross(salary.getGross());
+                vacancyEvent.setCurrency(salary.getCurrency());
             }
 
             vacancyEvent.setKeySkills(String.join(",", vacancy.getKeySkills()));

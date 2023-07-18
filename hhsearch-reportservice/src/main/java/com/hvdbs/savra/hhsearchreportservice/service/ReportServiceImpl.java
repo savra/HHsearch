@@ -1,5 +1,6 @@
 package com.hvdbs.savra.hhsearchreportservice.service;
 
+import com.hvdbs.savra.hhsearchreportservice.model.dto.VacancyDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.util.TempFile;
 import org.apache.poi.xssf.streaming.SXSSFRow;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public byte[] getReport() throws IOException {
+        List<VacancyDto> vacancyDtos = vacancyService.findAll();
 
         try (SXSSFWorkbook wb = new SXSSFWorkbook()) {
             SXSSFSheet sheet = wb.createSheet();
@@ -37,6 +40,22 @@ public class ReportServiceImpl implements ReportService {
                 sheet.autoSizeColumn(i);
             }
 
+            int columnIndex = 0;
+
+            for (VacancyDto vacancyDto : vacancyDtos) {
+                SXSSFRow row = sheet.createRow(rowIndex);
+                row.createCell(columnIndex++).setCellValue(vacancyDto.getName());
+                row.createCell(columnIndex++).setCellValue(vacancyDto.getExperience());
+                row.createCell(columnIndex++).setCellValue(vacancyDto.getUrl());
+
+                BigDecimal lowerBoundarySalary = vacancyDto.getLowerBoundarySalary();
+                BigDecimal upperBoundarySalary = vacancyDto.getUpperBoundarySalary();
+
+                row.createCell(columnIndex).setCellValue(vacancyDto.getKeySkills());
+                rowIndex++;
+                columnIndex = 0;
+            }
+
             File report = TempFile.createTempFile("report", ".tmp");
 
             try (FileOutputStream fileOutputStream = new FileOutputStream(report)) {
@@ -47,4 +66,9 @@ public class ReportServiceImpl implements ReportService {
             return Files.readAllBytes(report.toPath());
         }
     }
+
+
+   /* private findCurrencies() {
+
+    }*/
 }

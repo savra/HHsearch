@@ -1,6 +1,5 @@
-package com.hvdbs.savra.hhsearchreportservice.model.entity;
+package com.hvdbs.savra.hhsearchreportservice.model.dto;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,21 +8,13 @@ import java.util.Objects;
 
 @Setter
 @Getter
-@Entity
-@Table(name = "vacancy")
-public class Vacancy {
-    @Id
-    @GeneratedValue(generator = "vacancy_id_seq", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "vacancy_id_seq", sequenceName = "vacancy_id_seq", allocationSize = 1)
-    private Long id;
+public class VacancyDto {
     private String name;
     private String experience;
     private String url;
     private BigDecimal lowerBoundarySalary;
     private BigDecimal upperBoundarySalary;
     private String keySkills;
-    private Boolean gross;
-    private String currency;
 
     @Override
     public boolean equals(Object o) {
@@ -31,7 +22,7 @@ public class Vacancy {
             return true;
         }
 
-        if (!(o instanceof Vacancy vacancy)) {
+        if (!(o instanceof VacancyDto vacancy)) {
             return false;
         }
 

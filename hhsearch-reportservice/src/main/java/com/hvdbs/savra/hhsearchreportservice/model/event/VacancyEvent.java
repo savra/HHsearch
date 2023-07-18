@@ -17,4 +17,6 @@ public class VacancyEvent {
     private BigDecimal lowerBoundarySalary;
     private BigDecimal upperBoundarySalary;
     private String keySkills;
+    private String currency;
+    private Boolean gross;
 }
