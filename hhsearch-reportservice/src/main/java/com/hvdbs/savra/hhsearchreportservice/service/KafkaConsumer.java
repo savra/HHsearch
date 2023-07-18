@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class KafkaConsumer {
     private final VacancyService vacancyService;
-    @KafkaListener(topics = "${app.kafka.topic}", groupId = "${app.kafka.group-id}")
+    @KafkaListener(topics = "${app.kafka.consumer.topic}", groupId = "${app.kafka.consumer.group-id}")
     public void listenGroupVacancies(VacancyEvent vacancyEvent) {
         log.info("Received Message about vacancy with name: " + vacancyEvent.getName());
 

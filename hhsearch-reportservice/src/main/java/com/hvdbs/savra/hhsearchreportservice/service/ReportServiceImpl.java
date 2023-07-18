@@ -1,12 +1,21 @@
 package com.hvdbs.savra.hhsearchreportservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hvdbs.savra.hhsearchreportservice.model.dto.CurrencyRs;
 import com.hvdbs.savra.hhsearchreportservice.model.dto.VacancyDto;
+import com.hvdbs.savra.hhsearchreportservice.model.event.ReportEvent;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.util.TempFile;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,13 +27,19 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class ReportServiceImpl implements ReportService {
-    private static final List<String> HEADER = List.of("Название вакансии", "Необходимое кол-во опыта", "url",
+    private static final List<String> HEADER = List.of("Название вакансии", "Необходимое кол-во опыта", "URL",
             "Зарплата после вычета налога (чистыми) в рублях по курсу ЦБ на сегодня", "Список ключевых навыков");
 
+    @Value(value = "${app.kafka.producer.topic}")
+    private String kafkaTopic;
     private final VacancyService vacancyService;
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+    private final KafkaTemplate<String, ReportEvent> kafkaTemplate;
 
     @Override
     public byte[] getReport() throws IOException {
+        //    CurrencyRs currencyRs = findCurrencies();  TODO Добавить получение ставок ЦБ с сайта, сейчас проблема с TLS
         List<VacancyDto> vacancyDtos = vacancyService.findAll();
 
         try (SXSSFWorkbook wb = new SXSSFWorkbook()) {
@@ -33,7 +48,7 @@ public class ReportServiceImpl implements ReportService {
 
             int rowIndex = 0;
 
-            SXSSFRow headerRow = sheet.createRow(rowIndex);
+            SXSSFRow headerRow = sheet.createRow(rowIndex++);
 
             for (int i = 0; i < HEADER.size(); i++) {
                 headerRow.createCell(i).setCellValue(HEADER.get(i));
@@ -50,7 +65,21 @@ public class ReportServiceImpl implements ReportService {
 
                 BigDecimal lowerBoundarySalary = vacancyDto.getLowerBoundarySalary();
                 BigDecimal upperBoundarySalary = vacancyDto.getUpperBoundarySalary();
+                String salary = "";
 
+                if (lowerBoundarySalary != null) {
+                    salary = "От " + lowerBoundarySalary;
+
+                    if (upperBoundarySalary != null) {
+                        salary += " до " + upperBoundarySalary;
+                    }
+                } else {
+                    if (upperBoundarySalary != null) {
+                        salary += "До " + upperBoundarySalary;
+                    }
+                }
+
+                row.createCell(columnIndex++).setCellValue(salary);
                 row.createCell(columnIndex).setCellValue(vacancyDto.getKeySkills());
                 rowIndex++;
                 columnIndex = 0;
@@ -63,12 +92,20 @@ public class ReportServiceImpl implements ReportService {
                 wb.dispose();
             }
 
+            ReportEvent reportEvent = new ReportEvent();
+            reportEvent.setFile(report);
+            reportEvent.setName(report.getName());
+
+            kafkaTemplate.send(kafkaTopic, reportEvent);
             return Files.readAllBytes(report.toPath());
         }
     }
 
+    private CurrencyRs findCurrencies() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 
-   /* private findCurrencies() {
-
-    }*/
+        return restTemplate.getForObject("https://www.cbr-xml-daily.ru/daily_json.js", CurrencyRs.class);
+    }
 }
