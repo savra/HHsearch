@@ -1,5 +1,6 @@
 package com.hvdbs.savra.hhsearchreportservice.configuration;
 
+import com.hvdbs.savra.hhsearchreportservice.model.event.ReportEvent;
 import com.hvdbs.savra.hhsearchreportservice.model.event.VacancyEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -46,7 +47,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, VacancyEvent> producerFactory() {
+    public ProducerFactory<String, ReportEvent> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -56,7 +57,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, VacancyEvent> kafkaTemplate() {
+    public KafkaTemplate<String, ReportEvent> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

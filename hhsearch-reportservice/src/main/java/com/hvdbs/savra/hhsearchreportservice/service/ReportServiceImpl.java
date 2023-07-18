@@ -1,6 +1,5 @@
 package com.hvdbs.savra.hhsearchreportservice.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hvdbs.savra.hhsearchreportservice.model.dto.CurrencyRs;
 import com.hvdbs.savra.hhsearchreportservice.model.dto.VacancyDto;
 import com.hvdbs.savra.hhsearchreportservice.model.event.ReportEvent;
@@ -34,7 +33,6 @@ public class ReportServiceImpl implements ReportService {
     private String kafkaTopic;
     private final VacancyService vacancyService;
     private final RestTemplate restTemplate;
-    private final ObjectMapper objectMapper;
     private final KafkaTemplate<String, ReportEvent> kafkaTemplate;
 
     @Override

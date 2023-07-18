@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Blob;
 import java.time.LocalDateTime;
 
 @Setter
@@ -17,7 +16,6 @@ public class Report {
     @SequenceGenerator(name = "report_id_seq", sequenceName = "report_id_seq", allocationSize = 1)
     private Long id;
     private String name;
-    @Lob
-    private Blob reportFile;
+    private byte[] reportFile;
     private LocalDateTime reportDate;
 }

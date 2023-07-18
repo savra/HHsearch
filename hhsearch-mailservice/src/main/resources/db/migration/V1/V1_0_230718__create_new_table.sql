@@ -2,7 +2,7 @@ create table report
 (
     id                    BIGSERIAL,
     name                  TEXT not null,
-    report_file           blob not null,
+    report_file           bytea not null,
     report_date           date not null
 );
 
