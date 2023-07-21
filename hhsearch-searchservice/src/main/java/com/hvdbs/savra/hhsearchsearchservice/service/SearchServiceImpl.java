@@ -53,6 +53,7 @@ public class SearchServiceImpl implements SearchService {
                                 .queryParam("text", keyword)
                                 .queryParam("per_page", perPage)
                                 .queryParam("page", page)
+                                .build()
                                 .toUriString(), VacanciesRs.class)
                 .getBody();
     }
