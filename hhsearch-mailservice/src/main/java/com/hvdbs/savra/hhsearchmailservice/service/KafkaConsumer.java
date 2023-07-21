@@ -4,14 +4,13 @@ import com.hvdbs.savra.hhsearchmailservice.model.entity.Report;
 import com.hvdbs.savra.hhsearchmailservice.model.event.ReportEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
@@ -29,18 +28,20 @@ public class KafkaConsumer {
         Report report = new Report();
         report.setReportDate(LocalDateTime.now());
         report.setName(reportEvent.getName());
-
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        IOUtils.copy(new FileInputStream(reportEvent.getFile()), output);
-        byte[] fileContent = output.toByteArray();
-
-        report.setReportFile(fileContent);
+        report.setReportFile(reportEvent.getFile());
 
         reportService.save(report);
 
+        File outputFile = File.createTempFile(report.getName(), ".xlsx");
+
+        Files.write(outputFile.toPath(), reportEvent.getFile());
+
         emailService.sendMessageWithAttachment("savra.sv@yandex.ru",
                 "Статистика по HH.ru",
-                "Статистика на " + report.getReportDate(),
-                reportEvent.getFile());
+                "Статистика на " + report.getReportDate(), outputFile);
+
+        if (!(outputFile.delete())) {
+            throw new IOException("Could not delete temp file: " + outputFile.getAbsolutePath());
+        }
     }
 }

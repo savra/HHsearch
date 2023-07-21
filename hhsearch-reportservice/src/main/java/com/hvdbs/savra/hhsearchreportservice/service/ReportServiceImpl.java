@@ -4,6 +4,7 @@ import com.hvdbs.savra.hhsearchreportservice.model.dto.CurrencyRs;
 import com.hvdbs.savra.hhsearchreportservice.model.dto.VacancyDto;
 import com.hvdbs.savra.hhsearchreportservice.model.event.ReportEvent;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.util.TempFile;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -83,19 +84,21 @@ public class ReportServiceImpl implements ReportService {
                 columnIndex = 0;
             }
 
-            File report = TempFile.createTempFile("report", ".tmp");
+            File report = TempFile.createTempFile("report", ".xlsx");
 
             try (FileOutputStream fileOutputStream = new FileOutputStream(report)) {
                 wb.write(fileOutputStream);
                 wb.dispose();
             }
 
+            byte[] bytes = Files.readAllBytes(report.toPath());
+
             ReportEvent reportEvent = new ReportEvent();
-            reportEvent.setFile(report);
-            reportEvent.setName(report.getName());
+            reportEvent.setFile(bytes);
+            reportEvent.setName(FilenameUtils.removeExtension(report.getName()));
 
             kafkaTemplate.send(kafkaTopic, reportEvent);
-            return Files.readAllBytes(report.toPath());
+            return bytes;
         }
     }
 
