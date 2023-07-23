@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-cm
+  labels:
+    app: {{ .Chart.Name }}
+data:
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"

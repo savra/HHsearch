@@ -5,10 +5,10 @@ app:
   resources:
     limits:
       cpu: 300m
-      memory: 500Mi
+      memory: 300Mi
     requests:
       cpu: 300m
-      memory: 500Mi
+      memory: 100Mi
   port: 8443
   nodePort: 30443
 elasticsearch:

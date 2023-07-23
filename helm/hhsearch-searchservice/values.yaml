@@ -5,15 +5,14 @@ app:
   resources:
     limits:
       cpu: 300m
-      memory: 500Mi
+      memory: 300Mi
     requests:
       cpu: 300m
-      memory: 500Mi
+      memory: 100Mi
   port: 8444
 elasticsearch:
   host: elasticsearch
   port: 9200
-
 fluent:
   image: fluent/fluent-bit
   resources:

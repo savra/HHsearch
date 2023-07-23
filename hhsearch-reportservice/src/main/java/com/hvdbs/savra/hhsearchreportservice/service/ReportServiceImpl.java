@@ -1,7 +1,7 @@
 package com.hvdbs.savra.hhsearchreportservice.service;
 
 import com.hvdbs.savra.hhsearchreportservice.model.dto.CurrencyRs;
-import com.hvdbs.savra.hhsearchreportservice.model.dto.VacancyDto;
+import com.hvdbs.savra.hhsearchreportservice.model.entity.Vacancy;
 import com.hvdbs.savra.hhsearchreportservice.model.event.ReportEvent;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
@@ -10,17 +10,14 @@ import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -29,18 +26,13 @@ import java.util.List;
 public class ReportServiceImpl implements ReportService {
     private static final List<String> HEADER = List.of("Название вакансии", "Необходимое кол-во опыта", "URL",
             "Зарплата после вычета налога (чистыми) в рублях по курсу ЦБ на сегодня", "Список ключевых навыков");
-
     @Value(value = "${app.kafka.producer.topic}")
     private String kafkaTopic;
     private final VacancyService vacancyService;
-    private final RestTemplate restTemplate;
     private final KafkaTemplate<String, ReportEvent> kafkaTemplate;
 
     @Override
     public byte[] getReport() throws IOException {
-        //    CurrencyRs currencyRs = findCurrencies();  TODO Добавить получение ставок ЦБ с сайта, сейчас проблема с TLS
-        List<VacancyDto> vacancyDtos = vacancyService.findAll();
-
         try (SXSSFWorkbook wb = new SXSSFWorkbook()) {
             SXSSFSheet sheet = wb.createSheet();
             sheet.trackAllColumnsForAutoSizing();
@@ -56,30 +48,28 @@ public class ReportServiceImpl implements ReportService {
 
             int columnIndex = 0;
 
-            for (VacancyDto vacancyDto : vacancyDtos) {
+            List<Vacancy> vacancies = vacancyService.findAll();
+
+            for (Vacancy vacancy : vacancies) {
                 SXSSFRow row = sheet.createRow(rowIndex);
-                row.createCell(columnIndex++).setCellValue(vacancyDto.getName());
-                row.createCell(columnIndex++).setCellValue(vacancyDto.getExperience());
-                row.createCell(columnIndex++).setCellValue(vacancyDto.getUrl());
+                row.createCell(columnIndex++).setCellValue(vacancy.getName());
+                row.createCell(columnIndex++).setCellValue(vacancy.getExperience());
+                row.createCell(columnIndex++).setCellValue(vacancy.getUrl());
 
-                BigDecimal lowerBoundarySalary = vacancyDto.getLowerBoundarySalary();
-                BigDecimal upperBoundarySalary = vacancyDto.getUpperBoundarySalary();
-                String salary = "";
+                String currency = vacancy.getCurrency();
 
-                if (lowerBoundarySalary != null) {
-                    salary = "От " + lowerBoundarySalary;
+                CurrencyRs.Valute valute = null;
 
-                    if (upperBoundarySalary != null) {
-                        salary += " до " + upperBoundarySalary;
+                if (currency != null && !"RUR".equals(currency)) {
+                    if ("BYR".equals(currency)) {
+                        currency = "BYN";
                     }
-                } else {
-                    if (upperBoundarySalary != null) {
-                        salary += "До " + upperBoundarySalary;
-                    }
+
+                    valute = vacancyService.findCurrencies().getValutes().get(currency);
                 }
 
-                row.createCell(columnIndex++).setCellValue(salary);
-                row.createCell(columnIndex).setCellValue(vacancyDto.getKeySkills());
+                row.createCell(columnIndex++).setCellValue(getSalary(vacancy, valute));
+                row.createCell(columnIndex).setCellValue(vacancy.getKeySkills());
                 rowIndex++;
                 columnIndex = 0;
             }
@@ -98,15 +88,43 @@ public class ReportServiceImpl implements ReportService {
             reportEvent.setName(FilenameUtils.removeExtension(report.getName()));
 
             kafkaTemplate.send(kafkaTopic, reportEvent);
+
             return bytes;
         }
     }
 
-    private CurrencyRs findCurrencies() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+    private BigDecimal getNormalizeSalary(Vacancy vacancy, BigDecimal salary, CurrencyRs.Valute valute) {
+        if (salary != null) {
+            if (valute != null) {
+                salary = salary.multiply(BigDecimal.valueOf(valute.getValue())
+                        .divide(BigDecimal.valueOf(valute.getNominal()), RoundingMode.HALF_EVEN));
 
-        return restTemplate.getForObject("https://www.cbr-xml-daily.ru/daily_json.js", CurrencyRs.class);
+                if (vacancy.getGross()) {
+                    salary = salary.subtract(salary.multiply(BigDecimal.valueOf(0.13)));
+                }
+            }
+        }
+        return salary;
+    }
+
+    private String getSalary(Vacancy vacancy, CurrencyRs.Valute valute) {
+        BigDecimal lowerBoundarySalary = getNormalizeSalary(vacancy, vacancy.getLowerBoundarySalary(), valute);
+        BigDecimal upperBoundarySalary = getNormalizeSalary(vacancy, vacancy.getUpperBoundarySalary(), valute);
+
+        String salary = "";
+
+        if (lowerBoundarySalary != null) {
+            salary = "От " + lowerBoundarySalary.setScale(2, RoundingMode.HALF_EVEN);
+
+            if (upperBoundarySalary != null) {
+                salary += " до " + upperBoundarySalary.setScale(2, RoundingMode.HALF_EVEN);
+            }
+        } else {
+            if (upperBoundarySalary != null) {
+                salary += "До " + upperBoundarySalary.setScale(2, RoundingMode.HALF_EVEN);
+            }
+        }
+
+        return salary;
     }
 }

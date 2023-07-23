@@ -1,0 +1,10 @@
+replicaCount: 1
+
+app:
+  image: "redis:latest"
+  port: 6379
+  resources:
+    limits:
+      cpu: 1000m
+    requests:
+      cpu: 100m
