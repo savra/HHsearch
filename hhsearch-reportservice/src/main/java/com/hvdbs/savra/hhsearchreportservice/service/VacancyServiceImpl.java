@@ -7,7 +7,6 @@ import com.hvdbs.savra.hhsearchreportservice.model.event.VacancyEvent;
 import com.hvdbs.savra.hhsearchreportservice.repository.VacancyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -25,7 +23,6 @@ public class VacancyServiceImpl implements VacancyService {
     private final VacancyRepository vacancyRepository;
     private final VacancyMapper vacancyMapper;
     private final RestTemplate restTemplate;
-    private final RedisTemplate<LocalDateTime, CurrencyRs> redisTemplate;
     @Transactional
     @Override
     public void save(VacancyEvent vacancyEvent) {
