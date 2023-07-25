@@ -15,6 +15,7 @@
         <module>hhsearch-searchservice</module>
         <module>hhsearch-reportservice</module>
         <module>hhsearch-mailservice</module>
+        <module>hhsearch-configurationserver</module>
     </modules>
 
     <properties>
