@@ -12,3 +12,6 @@ services:
   mailservice:
     build: hhsearch-mailservice/
     image: savrawar/hhsearch-mailservice:0.0.1
+  configserver:
+    build: hhsearch-configurationserver/
+    image: savrawar/hhsearch-configurationserver:0.0.1
