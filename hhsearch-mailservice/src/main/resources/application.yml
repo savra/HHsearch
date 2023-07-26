@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: mailservice
+  config:
+    import: "configserver:http://localhost:8447"

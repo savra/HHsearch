@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: searchservice
+  config:
+    import: "configserver:http://localhost:8447"
