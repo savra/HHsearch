@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: servicediscovery
+  config:
+    import: "configserver:http://localhost:8447"
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import: "configserver:http://hhsearch-configurationserver:8447"
