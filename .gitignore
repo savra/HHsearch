@@ -35,3 +35,5 @@ build/
 /mvnw
 /mvnw.cmd
 /.run/startupservice.run.xml
+/hhsearch-service-discovery/target/
+/hhsearch-service-discovery/target/classes/com/hvdbs/savra/hhsearchservicediscovery/
