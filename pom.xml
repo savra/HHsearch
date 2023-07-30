@@ -17,6 +17,9 @@
         <module>hhsearch-mailservice</module>
         <module>hhsearch-configurationserver</module>
         <module>hhsearch-service-discovery</module>
+        <module>hhsearch-non-cloud-discovery-server1</module>
+        <module>hhsearch-non-cloud-discovery-server2</module>
+        <module>hhsearch-non-cloud-discovery-client</module>
     </modules>
 
     <properties>

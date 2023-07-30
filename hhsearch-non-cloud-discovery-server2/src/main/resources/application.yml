@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: discoveryserver2
+  config:
+    import: "configserver:http://localhost:8447"
